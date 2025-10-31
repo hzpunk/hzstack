@@ -1,0 +1,9 @@
+node_modules/
+.next/
+public/css/
+public/images/
+public/icons/
+.git/
+.DS_Store
+*.log
+

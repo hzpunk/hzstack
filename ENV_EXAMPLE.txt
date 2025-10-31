@@ -1,0 +1,24 @@
+# Supabase client (project-specific)
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+
+# HZid (central identity) verification
+HZID_JWKS_URL=
+HZID_ISSUER=
+HZID_AUDIENCE=
+
+# Project JWT minting for local Postgres access via RLS claims
+PROJECT_JWT_SECRET=
+# Optional overrides
+PROJECT_JWT_ISSUER=hz-project
+PROJECT_JWT_AUDIENCE=hz-project
+PROJECT_JWT_EXPIRES_IN=3600
+
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+
+# HZid integration (used by Edge Function hzid-exchange)
+HZID_JWKS_URL=
+PROJECT_JWT_SECRET=
+
+
