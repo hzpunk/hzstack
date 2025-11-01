@@ -29,6 +29,7 @@ import {
 } from 'date-fns'
 import { ru } from 'date-fns/locale'
 import { useQuery } from '@tanstack/react-query'
+import { useTest } from '@/hooks/useUserData'
 import { getMe } from '@/services/userService'
 import styles from './page.module.scss'
 
@@ -70,7 +71,8 @@ export default function ExamplesPage() {
     retry: false, // Не ретраить если не авторизован
     enabled: false, // Отключаем автоматический запрос (пример использования)
   })
-
+  
+  const { data: testData, isLoading: testLoading } = useTest()
   // Примеры работы с датами
   const dateExamples = {
     formatted: format(selectedDate, 'dd.MM.yyyy', { locale: ru }),

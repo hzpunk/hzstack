@@ -10,6 +10,29 @@ export function useUserData() {
     retry: 1,
   })
 }
+export function useTest(){
+  return useQuery({
+    queryKey:['test'],
+    queryFn:()=>{
+      return Promise.resolve({
+        data:{
+          "John":{
+            "age":20,
+            "city":"New York"
+          },
+          "Jane":{
+            "age":21,
+            "city":"Los Angeles"
+          },
+          "Jim":{
+            "age":22,
+            "city":"Chicago"
+          }
+        }
+      })
+    }
+  })
+}
 
 // Пример использования TanStack Query для обновления профиля
 export function useUpdateProfile() {
@@ -25,4 +48,5 @@ export function useUpdateProfile() {
     },
   })
 }
+
 
