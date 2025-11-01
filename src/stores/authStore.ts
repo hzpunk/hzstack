@@ -1,46 +1,88 @@
 import { create } from 'zustand'
 import { login as apiLogin, register as apiRegister, logout as apiLogout, refresh as apiRefresh } from '@/services/authService'
 import { getMe } from '@/services/userService'
+import type { UserProfile } from '@/services/userService'
 
 interface AuthState {
-  user: any
-  session: string | null
+  user: UserProfile | null
+  token: string | null
   isLoading: boolean
-  setUser: (user: any) => void
-  setSession: (session: string | null) => void
-  setLoading: (loading: boolean) => void
-  login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string, name?: string) => Promise<void>
+  isAuthenticated: boolean
+  setUser: (_user: UserProfile | null) => void
+  setToken: (_token: string | null) => void
+  setLoading: (_loading: boolean) => void
+  login: (_email: string, _password: string) => Promise<void>
+  register: (_email: string, _password: string, _name?: string, _dob?: string) => Promise<void>
   refresh: () => Promise<void>
   logout: () => void
+  initialize: () => Promise<void>
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
-  session: null,
+  token: null,
   isLoading: true,
-  setUser: (user) => set({ user }),
-  setSession: (session) => set({ session }),
+  isAuthenticated: false,
+  
+  setUser: (user) => set({ user, isAuthenticated: !!user }),
+  setToken: (token) => set({ token }),
   setLoading: (loading) => set({ isLoading: loading }),
+  
   login: async (email, password) => {
-    const tokens = await apiLogin({ email, password })
-    set({ session: tokens.access_token })
-    const me = await getMe()
-    set({ user: me })
+    try {
+      const tokens = await apiLogin({ email, password })
+      set({ token: tokens.access_token })
+      const me = await getMe()
+      set({ user: me, isAuthenticated: true })
+    } catch (error) {
+      set({ user: null, token: null, isAuthenticated: false })
+      throw error
+    }
   },
-  register: async (email, password, name) => {
-    const tokens = await apiRegister({ email, password, name })
-    set({ session: tokens.access_token })
-    const me = await getMe()
-    set({ user: me })
+  
+  register: async (email, password, name, dob) => {
+    try {
+      const tokens = await apiRegister({ email, password, name, dob })
+      set({ token: tokens.access_token })
+      const me = await getMe()
+      set({ user: me, isAuthenticated: true })
+    } catch (error) {
+      set({ user: null, token: null, isAuthenticated: false })
+      throw error
+    }
   },
+  
   refresh: async () => {
-    const tokens = await apiRefresh()
-    set({ session: tokens.access_token })
+    try {
+      const tokens = await apiRefresh()
+      set({ token: tokens.access_token })
+    } catch (error) {
+      // Если refresh не удался, разлогиниваем
+      get().logout()
+      throw error
+    }
   },
+  
   logout: () => {
     apiLogout()
-    set({ user: null, session: null })
+    set({ user: null, token: null, isAuthenticated: false })
+  },
+  
+  initialize: async () => {
+    try {
+      const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null
+      if (token) {
+        set({ token })
+        const me = await getMe()
+        set({ user: me, isAuthenticated: true, isLoading: false })
+      } else {
+        set({ isLoading: false })
+      }
+    } catch (error) {
+      // Если токен невалидный, очищаем
+      apiLogout()
+      set({ user: null, token: null, isAuthenticated: false, isLoading: false })
+    }
   },
 }))
 

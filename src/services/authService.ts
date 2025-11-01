@@ -16,32 +16,98 @@ export interface RegisterPayload {
   email: string
   password: string
   name?: string
+  date_of_birth?: string
+  dob?: string
+}
+
+// Формат ответа сервера:
+// {
+//   success: boolean
+//   message?: string
+//   data: {
+//     user: {...}
+//     accessToken: string  (или access_token)
+//     refreshToken?: string (или refresh_token)
+//   }
+// }
+
+export interface AuthResponse {
+  success: boolean
+  message?: string
+  data: {
+    accessToken: string  // сервер возвращает camelCase
+    refreshToken?: string
+    user: {
+      id: string | number
+      email: string
+      name?: string
+      role?: string
+      email_verified?: boolean
+      created_at?: string
+    }
+  }
 }
 
 export async function login(payload: LoginPayload): Promise<AuthTokens> {
-  const tokens = await apiFetch<AuthTokens>('/api/auth/login', {
+  const response = await apiFetch<AuthResponse>('/api/auth/login', {
     method: 'POST',
     body: JSON.stringify(payload),
   })
+  
+  // Сервер возвращает accessToken и refreshToken в data (на одном уровне с user)
+  const tokens: AuthTokens = {
+    access_token: response.data.accessToken,
+    refresh_token: response.data.refreshToken,
+  }
+  
   persistTokens(tokens)
   return tokens
 }
 
 export async function register(payload: RegisterPayload): Promise<AuthTokens> {
-  const tokens = await apiFetch<AuthTokens>('/api/auth/register', {
+  // Normalize dob to date_of_birth for server
+  const normalizedPayload: RegisterPayload = {
+    ...payload,
+    date_of_birth: payload.date_of_birth || payload.dob,
+  }
+  // Remove dob if date_of_birth is set to avoid duplicate
+  if (normalizedPayload.date_of_birth) {
+    delete normalizedPayload.dob
+  }
+  
+  const response = await apiFetch<AuthResponse>('/api/auth/register', {
     method: 'POST',
-    body: JSON.stringify(payload),
+    body: JSON.stringify(normalizedPayload),
   })
+  
+  // Сервер возвращает accessToken и refreshToken в data (на одном уровне с user)
+  const tokens: AuthTokens = {
+    access_token: response.data.accessToken,
+    refresh_token: response.data.refreshToken,
+  }
+  
   persistTokens(tokens)
   return tokens
 }
 
 export async function refresh(refreshToken?: string): Promise<AuthTokens> {
   const rt = refreshToken || (typeof window !== 'undefined' ? localStorage.getItem('refresh_token') : null)
-  const tokens = await apiFetch<AuthTokens>('/api/auth/refresh', {
+  
+  if (!rt) {
+    throw new Error('No refresh token available')
+  }
+  
+  // Сервер принимает refreshToken или refresh_token в теле запроса
+  const response = await apiFetch<AuthResponse>('/api/auth/refresh', {
     method: 'POST',
-    body: JSON.stringify({ refresh_token: rt }),
+    body: JSON.stringify({ refreshToken: rt, refresh_token: rt }),
   })
+  
+  const tokens: AuthTokens = {
+    access_token: response.data.accessToken,
+    refresh_token: response.data.refreshToken,
+  }
+  
   persistTokens(tokens)
   return tokens
 }
@@ -59,3 +125,9 @@ function persistTokens(tokens: AuthTokens) {
     if (tokens.refresh_token) localStorage.setItem('refresh_token', tokens.refresh_token)
   }
 }
+
+export function getAccessToken(): string | null {
+  if (typeof window === 'undefined') return null
+  return localStorage.getItem('access_token')
+}
+

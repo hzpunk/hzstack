@@ -1,0 +1,76 @@
+@import './variables';
+
+// Base text mixin
+@mixin text {
+  font-family: 'Cygre', 'Cygre_Book', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  font-weight: $font-weight;
+  text-transform: $text-transform;
+  color: $text-color;
+  line-height: $line-height;
+  word-break: $word-break;
+}
+
+// Heading 1
+@mixin text_h1 {
+  @include text;
+  font-size: $h1;
+}
+
+// Heading 2
+@mixin text_h2 {
+  @include text;
+  font-size: $h2;
+}
+
+// Text (body)
+@mixin text_text {
+  @include text;
+  font-size: $text;
+}
+
+// All text styles combined
+@mixin texts {
+  @include text;
+  
+  .text_h1 {
+    @include text_h1;
+  }
+  
+  .text_h2 {
+    @include text_h2;
+  }
+  
+  .text_text {
+    @include text_text; 
+  }
+}
+
+// Flex centering with gap
+@mixin flex_centering($gap: 0px) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: $gap;
+}
+
+// Button mixin
+@mixin button {
+  @include text_text;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid $text-color;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover:not(:disabled) {
+    background: $text-color;
+    color: #fff;
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+

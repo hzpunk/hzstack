@@ -1,0 +1,26 @@
+.case {
+  display: flex;
+  gap: 2px;
+  .left {
+    display: flex;
+    justify-content: space-between;
+    gap: 2px;
+    .up {
+      width: 18.46px;
+      height: 40px;
+      background: #090909;
+      border: 1px #090909 solid;
+    }
+  }
+  .right {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    .down {
+      width: 43.08px;
+      height: 18.46px;
+      background: #090909;
+      border: 1px #090909 solid;
+    }
+  }
+}

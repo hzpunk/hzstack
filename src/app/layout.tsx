@@ -1,7 +1,8 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import '@/styles/global.scss'
-import { Providers } from './providers'
+import { Header } from '@/shared'
+import { Providers } from '@/components/Providers'
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] })
 
@@ -11,10 +12,6 @@ export const metadata: Metadata = {
   keywords: 'вакансии студентам, поиск работы, стажировки',
 }
 
-import { AuthProvider } from '@/components/AuthProvider'
-import { QueryProvider } from '@/components/QueryProvider'
-import Header from '@/components/layout/Header'
-
 export default function RootLayout({
   children,
 }: {
@@ -23,12 +20,10 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={inter.className}>
-        <QueryProvider>
-          <AuthProvider>
-            <Header />
-            {children}
-          </AuthProvider>
-        </QueryProvider>
+        <Providers>
+          <Header />
+          <main>{children}</main>
+        </Providers>
       </body>
     </html>
   )

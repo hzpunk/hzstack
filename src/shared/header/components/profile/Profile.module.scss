@@ -1,0 +1,15 @@
+
+.button {
+  width: calc(100vh / (100% + 277.53px));
+  height: 100%;
+  background: #090909;
+  padding: 10px;
+  color: #fff;
+  text-align: center;
+  border: 1px solid #090909;
+  &:hover {
+    background: #fff;
+    color: #090909;
+    cursor: pointer;
+  }
+}

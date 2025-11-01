@@ -1,46 +1,18 @@
-// Colors
-$color-primary: #6366f1;
-$color-primary-dark: #4f46e5;
-$color-secondary: #8b5cf6;
-$color-success: #10b981;
-$color-warning: #f59e0b;
-$color-error: #ef4444;
+$h1: 80px;
+$h2: 30px;
+$text: 20px;
+$elements: 16px;
 
-$color-text: #1f2937;
-$color-text-light: #6b7280;
-$color-bg: #ffffff;
-$color-bg-light: #f9fafb;
-$color-border: #e5e7eb;
-$color-shadow: rgba(0, 0, 0, 0.1);
+$font-weight: 350;
 
-// Spacing
-$spacing-xs: 0.25rem;
-$spacing-sm: 0.5rem;
-$spacing-md: 1rem;
-$spacing-lg: 1.5rem;
-$spacing-xl: 2rem;
-$spacing-2xl: 3rem;
+$text-transform: lowercase;
 
-// Border Radius
-$border-radius: 0.5rem;
-$border-radius-lg: 1rem;
+$line-height: 79.20px;
 
-// Typography
-$font-size-xs: 0.75rem;
-$font-size-sm: 0.875rem;
-$font-size-base: 1rem;
-$font-size-lg: 1.125rem;
-$font-size-xl: 1.25rem;
-$font-size-2xl: 1.5rem;
-$font-size-3xl: 1.875rem;
-$font-size-4xl: 2.25rem;
+$word-break: break-word;
 
-// Transitions
-$transition: all 0.3s ease;
+$text-color: #000;
 
-// Breakpoints
-$breakpoint-sm: 640px;
-$breakpoint-md: 768px;
-$breakpoint-lg: 1024px;
-$breakpoint-xl: 1280px;
-
+$button-width: calc(100vh / (100% + 277.53px));
+$width: calc(100vh - (10% - 100px));
+$gap-20: calc(100vh / 20);

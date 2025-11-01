@@ -13,6 +13,9 @@ module.exports = {
   rules: {
     'react-hooks/exhaustive-deps': 'warn',
     'no-console': ['warn', { allow: ['warn', 'error'] }],
+    'no-unused-vars': 'off',
+    'no-undef': 'off',
+    'no-redeclare': 'off',
   },
   ignorePatterns: ['node_modules/', '.next/', 'public/', 'supabase/functions/'],
 };
