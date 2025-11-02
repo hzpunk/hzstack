@@ -2,29 +2,17 @@
 
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@supabase/supabase-js'
 import { Button } from '@/shared'
 import { useAuthStore } from '@/stores/authStore'
-import { exchangeHzidToken } from '@/services/hzid'
-import { getMe } from '@/services/userService'
+import { hzidLogin, hzidSignup, hzidGetMe } from '@/services/hzidService'
 import styles from './HZid.module.scss'
-
-// Инициализация Supabase клиента для HZid
-const getSupabaseClient = () => {
-  const url = process.env.NEXT_PUBLIC_HZID_URL || process.env.NEXT_PUBLIC_SUPABASE_URL
-  const anonKey = process.env.NEXT_PUBLIC_HZID_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  if (!url || !anonKey) {
-    throw new Error('HZid credentials not configured. Please set NEXT_PUBLIC_HZID_URL and NEXT_PUBLIC_HZID_ANON_KEY')
-  }
-
-  return createClient(url, anonKey)
-}
 
 export const HZid = () => {
   const router = useRouter()
-  const setUser = useAuthStore((state) => state.setUser)
-  const setToken = useAuthStore((state) => state.setToken)
+  const { setUser, setToken } = useAuthStore((state) => ({
+    setUser: state.setUser,
+    setToken: state.setToken,
+  }))
   const [isLogin, setIsLogin] = useState(true)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -46,74 +34,86 @@ export const HZid = () => {
     setIsLoading(true)
 
     try {
-      const supabase = getSupabaseClient()
-
       if (isLogin) {
-        // Вход через HZid
-        const { data, error: signInError } = await supabase.auth.signInWithPassword({
-          email: formData.email,
-          password: formData.password,
+        // Вход через HZid API
+        console.log('[HZid Widget] Login: Starting login', { email: formData.email })
+        const response = await hzidLogin(formData.email, formData.password)
+        
+        console.log('[HZid Widget] Login: Got HZid token, exchanging to local')
+        
+        // Обмениваем HZid токен на локальный (создаст/обновит пользователя в БД)
+        const { exchangeHzidTokenToLocal } = await import('@/services/hzidService')
+        const exchangeResult = await exchangeHzidTokenToLocal(response.tokens.access_token)
+        
+        console.log('[HZid Widget] Login: Token exchanged', {
+          localUserId: exchangeResult.user.id,
+          email: exchangeResult.user.email,
+          name: exchangeResult.user.name,
         })
-
-        if (signInError) {
-          throw new Error(signInError.message || 'Ошибка входа')
-        }
-
-        if (!data.session?.access_token) {
-          throw new Error('Токен не получен от HZid')
-        }
-
-        // Обмениваем HZid токен на локальный
-        const exchangeResult = await exchangeHzidToken(data.session.access_token)
         
-        // Устанавливаем токен
-        setToken(exchangeResult.accessToken)
+        // Сохраняем локальный токен
+        setToken(exchangeResult.accessToken, false)
         
-        // Получаем данные пользователя
+        // Получаем полные данные пользователя из локальной БД
+        const { getMe } = await import('@/services/userService')
         const user = await getMe()
+        
+        console.log('[HZid Widget] Login: User data from local DB', {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          phone: user.phone,
+          address: user.address,
+        })
+        
         setUser(user)
-
         router.push('/')
       } else {
-        // Регистрация через HZid
+        // Регистрация через HZid API
         if (!formData.name) {
           setError('Пожалуйста, укажите имя')
           setIsLoading(false)
           return
         }
 
-        const { data, error: signUpError } = await supabase.auth.signUp({
-          email: formData.email,
-          password: formData.password,
-          options: {
-            data: {
-              name: formData.name,
-              date_of_birth: formData.dob || null,
-            }
-          }
+        const username = formData.email.split('@')[0] || `user_${Date.now()}`
+        await hzidSignup(
+          formData.email,
+          formData.password,
+          username,
+          formData.name
+        )
+        
+        // После регистрации логинимся
+        console.log('[HZid Widget] Register: Login after signup', { email: formData.email })
+        const response = await hzidLogin(formData.email, formData.password)
+        
+        console.log('[HZid Widget] Register: Got HZid token, exchanging to local')
+        
+        // Обмениваем HZid токен на локальный (создаст/обновит пользователя в БД)
+        const { exchangeHzidTokenToLocal } = await import('@/services/hzidService')
+        const exchangeResult = await exchangeHzidTokenToLocal(response.tokens.access_token)
+        
+        console.log('[HZid Widget] Register: Token exchanged', {
+          localUserId: exchangeResult.user.id,
+          email: exchangeResult.user.email,
+          name: exchangeResult.user.name,
         })
-
-        if (signUpError) {
-          throw new Error(signUpError.message || 'Ошибка регистрации')
-        }
-
-        if (!data.session?.access_token) {
-          // Если email требует подтверждения, показываем сообщение
-          setError('Проверьте вашу почту для подтверждения регистрации')
-          setIsLoading(false)
-          return
-        }
-
-        // Обмениваем HZid токен на локальный
-        const exchangeResult = await exchangeHzidToken(data.session.access_token)
         
-        // Устанавливаем токен
-        setToken(exchangeResult.accessToken)
+        // Сохраняем локальный токен
+        setToken(exchangeResult.accessToken, false)
         
-        // Получаем данные пользователя
+        // Получаем полные данные пользователя из локальной БД
+        const { getMe } = await import('@/services/userService')
         const user = await getMe()
+        
+        console.log('[HZid Widget] Register: User data from local DB', {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+        })
+        
         setUser(user)
-
         router.push('/')
       }
     } catch (err) {
@@ -127,25 +127,33 @@ export const HZid = () => {
     try {
       setError(null)
       setIsLoading(true)
-      const supabase = getSupabaseClient()
-
-      const { error: oauthError } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : undefined,
-        }
-      })
-
-      if (oauthError) {
-        throw new Error(oauthError.message || `Ошибка входа через ${provider}`)
+      
+      // OAuth через HZid API
+      // Согласно документации, нужно использовать /oauth/authorize
+      const hzidApiUrl = process.env.NEXT_PUBLIC_HZID_API_URL || 'https://hzid.vercel.app/api'
+      const clientId = process.env.NEXT_PUBLIC_HZID_CLIENT_ID || ''
+      const redirectUri = typeof window !== 'undefined' 
+        ? `${window.location.origin}/auth/callback`
+        : ''
+      
+      if (!clientId) {
+        throw new Error('HZid client ID not configured')
       }
 
-      // OAuth редирект произойдет автоматически
+      const state = Math.random().toString(36).substring(7)
+      localStorage.setItem('oauth_state', state)
+      
+      const authUrl = `${hzidApiUrl}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=profile email&state=${state}`
+      
+      window.location.href = authUrl
+      
+      // Редирект произойдет автоматически
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Произошла ошибка')
       setIsLoading(false)
     }
   }
+
 
   return (
     <div className={styles.hzid}>
@@ -156,7 +164,11 @@ export const HZid = () => {
           </div>
         </label>
 
-        {error && <div className={styles.error}>{error}</div>}
+        {error && (
+          <div className={styles.error} style={{ whiteSpace: 'pre-line' }}>
+            {error}
+          </div>
+        )}
 
         <label className={styles.case}>
           <div className={styles.text_text}>Email</div>

@@ -20,7 +20,7 @@ export interface RegisterPayload {
   dob?: string
 }
 
-// Формат ответа сервера:
+// Формат ответа локального сервера:
 // {
 //   success: boolean
 //   message?: string
@@ -48,6 +48,9 @@ export interface AuthResponse {
   }
 }
 
+/**
+ * Вход через локальный API
+ */
 export async function login(payload: LoginPayload): Promise<AuthTokens> {
   const response = await apiFetch<AuthResponse>('/api/auth/login', {
     method: 'POST',
@@ -64,6 +67,9 @@ export async function login(payload: LoginPayload): Promise<AuthTokens> {
   return tokens
 }
 
+/**
+ * Регистрация через локальный API
+ */
 export async function register(payload: RegisterPayload): Promise<AuthTokens> {
   // Normalize dob to date_of_birth for server
   const normalizedPayload: RegisterPayload = {
@@ -90,6 +96,9 @@ export async function register(payload: RegisterPayload): Promise<AuthTokens> {
   return tokens
 }
 
+/**
+ * Обновление токена через локальный API
+ */
 export async function refresh(refreshToken?: string): Promise<AuthTokens> {
   const rt = refreshToken || (typeof window !== 'undefined' ? localStorage.getItem('refresh_token') : null)
   
@@ -112,6 +121,9 @@ export async function refresh(refreshToken?: string): Promise<AuthTokens> {
   return tokens
 }
 
+/**
+ * Выход через локальный API
+ */
 export function logout(): void {
   if (typeof window !== 'undefined') {
     localStorage.removeItem('access_token')
