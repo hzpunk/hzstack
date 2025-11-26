@@ -1,36 +1,161 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# HzStack
 
-## Getting Started
+Full-stack Next.js application with authentication, admin panel, and modern features.
 
-First, run the development server:
+## 🚀 Quick Start
+
+### Using CLI (recommended)
 
 ```bash
+npx create-hzstack my-app
+cd my-app
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Manual setup
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+git clone https://github.com/hzpunk/hzstack.git my-app
+cd my-app
+npm install
+cp .env.example .env
+# Configure your database in .env
+npx prisma migrate dev
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Features
 
-## Learn More
+- 🔐 **Authentication** with JWT tokens
+- 🛡️ **Admin Panel** with role-based access control
+- 📊 **Audit Dashboard** with animated charts
+- 🎨 **Tailwind CSS** for styling
+- 🗄️ **Prisma** with PostgreSQL
+- 📱 **Responsive Design**
+- 🖼️ **Avatar Upload**
+- 🔔 **Notifications System**
+- 🎯 **TypeScript** with strict mode
 
-To learn more about Next.js, take a look at the following resources:
+## 🏗️ Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Framework**: Next.js 15 with App Router
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: JWT with bcrypt
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **Animations**: Framer Motion
+- **Validation**: Zod
+- **UI Components**: Custom components with Lucide icons
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📋 Project Structure
 
-## Deploy on Vercel
+```
+src/
+├── app/
+│   ├── (auth)/          # Authentication pages
+│   ├── (admin)/         # Admin panel
+│   ├── (main)/          # Main application
+│   └── api/             # API routes
+├── components/          # React components
+├── lib/                 # Utilities
+├── store/               # State management
+└── middleware.ts        # Next.js middleware
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🔐 Role Hierarchy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **CEO**: Full access to all features
+- **Admin**: Can manage users (assign manager role only)
+- **Manager**: Read-only access to admin panel
+- **User**: Basic profile management
+
+## 🛡️ Security Features
+
+- JWT token authentication
+- Rate limiting (3 attempts per minute)
+- Input validation with Zod
+- SQL injection protection (Prisma ORM)
+- Password hashing with bcrypt (12 rounds)
+- CORS protection
+- Secure HTTP-only cookies
+
+## 📊 Admin Panel Features
+
+- User management with search
+- Role-based permissions
+- Animated statistics dashboard
+- Interactive charts with hover effects
+- User deletion (CEO only)
+- Real-time online status
+
+## 👤 Profile Features
+
+- Edit profile information
+- Upload and change avatar
+- Change password
+- Manage interests
+- Notifications system
+
+## 🔧 Environment Variables
+
+```env
+# Database
+DATABASE_URL="postgresql://user:password@localhost:5432/mydb"
+
+# JWT
+JWT_SECRET="your-secret-key"
+
+# Next.js
+NEXTAUTH_URL="http://localhost:3000"
+```
+
+## 📱 Responsive Design
+
+- Mobile-first approach
+- Adaptive layouts
+- Touch-friendly interface
+- Optimized for all screen sizes
+
+## 🚀 Deployment
+
+### Vercel (recommended)
+
+1. Connect your repository to Vercel
+2. Configure environment variables
+3. Deploy automatically
+
+### Docker
+
+```bash
+docker build -t hzstack .
+docker run -p 3000:3000 hzstack
+```
+
+## 📚 Documentation
+
+- [API Documentation](./docs/api.md)
+- [Database Schema](./docs/database.md)
+- [Security Guide](./docs/security.md)
+- [Deployment Guide](./docs/deployment.md)
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📄 License
+
+MIT © [HzCompany](https://github.com/hzcompany)
+
+## 🆘 Support
+
+- Create an issue on GitHub
+- Join our Discord community
+- Check the documentation
+
+---
+
+Built with ❤️ by [HzCompany](https://github.com/hzcompany)
