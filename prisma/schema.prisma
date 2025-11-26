@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String // Storing hashed password since we are handling auth manually
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  isAdmin   Boolean  @default(false)
+  roles     String[] @default([])
+  lastActive DateTime @default(now())
+
+  profile       Profile?
+  notifications Notification[]
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  firstName String?
+  lastName  String?
+  phone     String?
+  role      String?  // e.g. "Developer", "Designer"
+  avatar    String?  // URL to image
+  interests String[] // Array of strings for tags
+  privacy   Json?    // JSON blob for privacy settings
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      String   // e.g. "system", "invite"
+  content   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
