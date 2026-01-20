@@ -2,12 +2,15 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #070D0D;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-black: #070D0D;
+  --color-brand-blue: #495BFF;
+  --color-brand-grey: #959595;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-cygre: "Cygre", sans-serif;
@@ -21,18 +24,75 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@layer components {
+  .typ-h1 {
+    @apply font-cygre font-normal text-[80px] leading-none text-brand-black;
+  }
+
+  .typ-h2 {
+    @apply font-cygre font-normal text-[30px] leading-none text-brand-black;
+  }
+
+  .typ-text {
+    @apply font-cygre font-normal text-[20px] text-brand-black;
+  }
+
+  .typ-el {
+    @apply font-cygre font-normal text-[16px] text-brand-black;
+  }
+
+  .catalog-range {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    height: 12px;
+  }
+
+  .catalog-range:focus {
+    outline: none;
+  }
+
+  .catalog-range::-webkit-slider-runnable-track {
+    height: 1px;
+    background: rgba(7, 13, 13, 0.6);
+  }
+
+  .catalog-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border: 1px solid rgba(7, 13, 13, 0.6);
+    margin-top: -4.5px;
+  }
+
+  .catalog-range::-moz-range-track {
+    height: 1px;
+    background: rgba(7, 13, 13, 0.6);
+  }
+
+  .catalog-range::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    background: #ffffff;
+    border: 1px solid rgba(7, 13, 13, 0.6);
+    border-radius: 0;
+  }
+}
+
 @layer utilities {
   .typography-h1 {
     font-family: var(--font-cygre);
     font-weight: 400;
     font-size: 80px;
-    color: #000000;
+    color: #070D0D;
   }
 
   .typography-h2 {
     font-family: var(--font-cygre);
     font-weight: 400;
     font-size: 30px;
-    color: #000000;
+    color: #070D0D;
   }
 }

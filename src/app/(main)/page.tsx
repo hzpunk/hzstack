@@ -1,15 +1,18 @@
 import { Hero } from '@/components/Hero'
-import { StackTicker } from '@/components/StackTicker'
-import { Integrations } from '@/components/Integrations'
+import { Pricing } from '@/components/Pricing'
+import { Faq } from '@/components/Faq'
+import { Steps } from '@/components/Steps'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      <main className="flex-grow flex flex-col gap-[302px] mb-[302px]">
+    <main className="bg-white">
+      <section className="min-h-[calc(100vh-56px)] flex items-center justify-center px-8">
         <Hero />
-        <StackTicker />
-        <Integrations />
-      </main>
-    </div>
+      </section>
+
+      <Steps />
+      <Pricing />
+      <Faq />
+    </main>
   )
 }

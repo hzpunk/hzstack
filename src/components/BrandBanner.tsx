@@ -1,13 +1,11 @@
 export function BrandBanner() {
   return (
-    <div className="w-full bg-[#FAFAFA] relative overflow-hidden h-40 md:h-60 lg:h-80">
+    <div className="w-full bg-white relative overflow-hidden h-56">
       <div
-        className="absolute top-1/2 left-1/2 text-black font-black uppercase whitespace-nowrap select-none"
+        className="absolute left-0 bottom-[-52px] md:bottom-[-70px] text-brand-black font-cygre font-normal whitespace-nowrap select-none"
         style={{
-          fontFamily: 'var(--font-cygre), sans-serif',
-          fontSize: 'clamp(3rem, 15vw, 20rem)',
+          fontSize: 'clamp(6rem, 26vw, 28rem)',
           letterSpacing: '-0.05em',
-          transform: 'translate(-50%, -50%)',
           lineHeight: 1,
         }}
       >

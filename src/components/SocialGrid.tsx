@@ -1,38 +1,37 @@
-'use client'
+import type { ComponentType } from 'react'
 
-import { motion } from 'framer-motion'
-import { SocialLink } from '@/model/links'
+type IconProps = {
+  size?: number | string
+  strokeWidth?: number | string
+  className?: string
+}
+
+type SocialGridLink = {
+  label: string
+  href: string
+  icon: ComponentType<IconProps>
+}
 
 interface SocialGridProps {
-  links: SocialLink[]
+  links: SocialGridLink[]
 }
 
 export function SocialGrid({ links }: SocialGridProps) {
   return (
-    <div className="grid grid-cols-2 gap-2 md:gap-4">
-      {links.map((item, index) => {
+    <div className="grid grid-cols-2 gap-4">
+      {links.map((item) => {
         const Icon = item.icon
         return (
-          <motion.a
+          <a
             key={item.label}
             href={item.href}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-24 h-24 sm:w-28 sm:h-28 bg-[#FAFAFA] border border-[#070D0D] text-black rounded-none flex items-start justify-end p-2 sm:p-3 hover:bg-black hover:text-white transition-colors relative overflow-hidden group"
+            className="h-24 w-24 sm:h-28 sm:w-28 md:h-32 md:w-32 border border-brand-black/40 bg-white text-brand-black flex items-start justify-end p-3 hover:opacity-80 transition-opacity"
             aria-label={item.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1, duration: 0.5 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
           >
-            <motion.div
-              initial={false}
-              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-            >
-              <Icon size={24} strokeWidth={1.5} />
-            </motion.div>
-          </motion.a>
+            <Icon size={22} strokeWidth={1.75} />
+          </a>
         )
       })}
     </div>
