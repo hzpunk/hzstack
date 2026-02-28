@@ -32,7 +32,7 @@ export async function GET(req: Request) {
   })
 
   // Transform to safe user objects
-  const safeUsers = users.map(user => {
+  const safeUsers = users.map((user: { password: string; [key: string]: any }) => {
     const { password, ...rest } = user
     return rest
   })

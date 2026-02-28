@@ -4,7 +4,7 @@ import { getTokenFromRequest, verifyToken } from '@/lib/jwt'
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const token = getTokenFromRequest(req as any)
@@ -23,7 +23,7 @@ export async function DELETE(
       )
     }
 
-    const { id } = params
+    const { id } = await params
 
     // Удаляем уведомление, только если оно принадлежит текущему пользователю
     const deletedNotification = await prisma.notification.deleteMany({

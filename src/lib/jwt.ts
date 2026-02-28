@@ -1,6 +1,12 @@
 import jwt from 'jsonwebtoken'
 import { NextRequest, NextResponse } from 'next/server'
-import { User } from '@prisma/client'
+
+interface User {
+  id: string
+  email: string
+  isAdmin: boolean
+  roles: string[]
+}
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret-change-in-prod'
 

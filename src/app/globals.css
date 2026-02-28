@@ -13,7 +13,7 @@
   --color-brand-grey: #959595;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-cygre: "Cygre", sans-serif;
+  --font-family-cygre: "Cygre", sans-serif;
 }
 
 /* Removed dark mode media query to enforce light theme */
@@ -83,14 +83,14 @@ body {
 
 @layer utilities {
   .typography-h1 {
-    font-family: var(--font-cygre);
+    font-family: var(--font-family-cygre);
     font-weight: 400;
     font-size: 80px;
     color: #070D0D;
   }
 
   .typography-h2 {
-    font-family: var(--font-cygre);
+    font-family: var(--font-family-cygre);
     font-weight: 400;
     font-size: 30px;
     color: #070D0D;

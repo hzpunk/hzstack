@@ -90,9 +90,9 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       ok: true,
-      notifications: notifications.map(n => ({
+      notifications: notifications.map((n: { id: string; content: string; createdAt: Date }) => ({
         id: n.id,
-        text: n.content, // Используем поле content
+        text: n.content,
         createdAt: n.createdAt.toISOString(),
       }))
     })

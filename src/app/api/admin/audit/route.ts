@@ -34,9 +34,9 @@ export async function GET(req: Request) {
 
   const totalUsers = users.length
   // @ts-ignore
-  const adminCount = users.filter((u) => u.isAdmin || u.roles.includes('admin')).length
+  const adminCount = users.filter((u: { isAdmin: boolean; roles: string[] }) => u.isAdmin || u.roles.includes('admin')).length
   // @ts-ignore
-  const managerCount = users.filter((u) => u.roles.includes('manager')).length
+  const managerCount = users.filter((u: { roles: string[] }) => u.roles.includes('manager')).length
 
   // Distribution for Pie Chart
   const userRoleCount = totalUsers - adminCount - managerCount // simplified logic for unique roles if exclusive, else overlap
@@ -47,7 +47,7 @@ export async function GET(req: Request) {
   let managers = 0
   let regularUsers = 0
 
-  users.forEach(u => {
+  users.forEach((u: { isAdmin: boolean; roles: string[] }) => {
     // @ts-ignore
     if (u.isAdmin || u.roles.includes('admin')) {
       admins++
@@ -76,7 +76,7 @@ export async function GET(req: Request) {
   })
 
   // Real-time online count (active in last 5 mins)
-  const onlineCount = users.filter(u => {
+  const onlineCount = users.filter((u: { lastActive: Date }) => {
       // @ts-ignore
       return new Date().getTime() - new Date(u.lastActive).getTime() < 5 * 60 * 1000
   }).length
